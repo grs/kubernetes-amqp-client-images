@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: recv
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: recv
+  template:
+    metadata:
+      labels:
+        application: recv
+    spec:
+      containers:
+      - image: quay.io/gordons/recv
+        imagePullPolicy: IfNotPresent
+        name: recv
+        env:
+        - name: ADDRESS
+          value: mc/leaders
+        volumeMounts:
+        - name: connect
+          mountPath: "/etc/messaging/"
+          readOnly: true
+      volumes:
+      - name: connect
+        secret:
+          secretName: skupper

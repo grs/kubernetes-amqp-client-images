@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: send
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: send
+  template:
+    metadata:
+      labels:
+        application: send
+    spec:
+      containers:
+      - image: quay.io/gordons/send
+        imagePullPolicy: IfNotPresent
+        name: send
+        env:
+        - name: ADDRESS
+          value: mc/leaders
+        volumeMounts:
+        - name: connect
+          mountPath: "/etc/messaging/"
+          readOnly: true
+      volumes:
+      - name: connect
+        secret:
+          secretName: skupper
